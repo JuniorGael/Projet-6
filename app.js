@@ -1,21 +1,28 @@
 // importer express
 const express = require("express");
 
+// creer une application express
+const app = express();
+
+// transformer le corps de la requete (body) en JSON (objet js utilisable)
+app.use(express.json());
+
 // importer le package 'morgan'
 const morgan = require("morgan");
 
 // importer le package mongodb
 // const mongoose = require("mongoose")
 
+// importer le body-parser
+const bodyParser = require("body-parser");
+
+app.use(bodyParser.json());
+
 // importer mongoose pour se connecte a la base de donnees
 const mongoose = require("./database/db");
 
-
-// creer une application express
-const app = express();
-
-// importer le body-parser
-const bodyParser = require("body-parser");
+// importer les routes
+const userRoutes = require("./routes/user");
 
 // logger les requests et les responses
 app.use(morgan("dev"));
@@ -30,9 +37,9 @@ app.use((req, res, next) => {
     next();
 });
 
-// transformer le corps de la requete (body) en JSON (objet js utilisable)
-// app.use(bodyParser.json());
-app.use(express.json());
+
+// creer une route d'authentification (auth)
+app.use("/api/auth", userRoutes);
 
 //
 app.use((req, res, next) => {
