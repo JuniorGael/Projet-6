@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 // importer le package 'crypto-js' pour chiffrer le mail
 const cryptoJs = require("crypto-js");
 
+// importer le package jsonwebtoken
+const jwt = require("jsonwebtoken");
+
 // importer pour utiliser les variables d'environnements
 const dotenv = require("dotenv");
 const result = dotenv.config();
@@ -81,7 +84,18 @@ exports.login = (req, res, next) => {
                     if(!controlPassword) {
                         return res.status(401).json({error: "Incorrect password"})
                     }
-                    res.status(200).json({message: "Correct password"})
+                    // verifier que le password est correct
+                    // envoyer la response dans le serveur du userId et du token d'authentification 
+                    res.status(200).json({
+                        // encoder le userId pour creer un nouvel objet(objet et userId seront lies)
+                        userId: user._id,
+                        token: jwt.sign(
+                            // creer les 3 arguments(userId, la cle de chiffrement, expiresIn)
+                            { userId: user._id},
+                            `${process.env.JWT_KEY_TOKEN}`,
+                            {expiresIn: "24h"}
+                        )
+                    })
                 })
                 .catch((error) => res.status(500).json({error}))
         })
