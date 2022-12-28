@@ -9,6 +9,7 @@ const mongoose = require("./database/db");
 
 // importer les routes
 const userRoutes = require("./routes/user");
+const dataUserRoutes = require("./routes/dataUser");
 
 // creer une application express
 const app = express();
@@ -41,6 +42,9 @@ app.use((req, res, next) => {
 
 // creer une route d'authentification (auth)
 app.use("/api/auth", userRoutes);
+
+// creer une route pour les donnees user
+app.use("/api/data_user", dataUserRoutes);
 
 //
 app.use((req, res, next) => {
