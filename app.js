@@ -11,17 +11,14 @@ const mongoose = require("./database/db");
 const userRoutes = require("./routes/user");
 const dataUserRoutes = require("./routes/dataUser");
 
+// importer node.js utilitaires pour travailler avec les chemins de fichiers et de repertoires
+const path = require("path");
+
 // creer une application express
 const app = express();
 
 // transformer le corps de la requete (body) en JSON (objet js utilisable)
 app.use(express.json());
-
-// importer le body-parser
-const bodyParser = require("body-parser");
-
-app.use(bodyParser.json());
-
 
 // logger les requests et les responses
 app.use(morgan("dev"));
@@ -46,14 +43,19 @@ app.use("/api/auth", userRoutes);
 // creer une route pour les donnees user
 app.use("/api/data_user", dataUserRoutes);
 
-//
-app.use((req, res, next) => {
-    console.log("Premiere requete !");
-    next();
-});
-app.use((req, res) => {
-    res.json({ message:"La premiere requete fonctionne !"});
-});
+// creer une route pour acceder aux images du dossier 'images'
+app.use("/images", express.static(path.join(__dirname, "images")));
+console.log("Contenu__dirname");
+console.log(__dirname);
+
+// //
+// app.use((req, res, next) => {
+//     console.log("Premiere requete !");
+//     next();
+// });
+// app.use((req, res) => {
+//     res.json({ message:"La premiere requete fonctionne !"});
+// });
 
 // Exporter app.js pour pouvoir y acceder depuis un autre fichier
 module.exports = app;

@@ -35,14 +35,29 @@ module.exports = (req, res, next) => {
         console.log("--------->Contenu: userId contenu dans le body dela requete");
         console.log(req.body.userId);
 
+        console.log("----->Contenu: Req.originalUrl");
+        console.log(req.originalUrl);
+
+        const userIdParamsUrl = req.originalUrl.split("=")[1];
+        console.log(userIdParamsUrl);
+
         // compare le userId de la requete avec le userId du token
-        if(req.body.userId && (req.body.userId !== userIdDecodedToken)){
+        if(req._body === true) {
+            // controler le corps quand ca passe par body Raw
+            console.log("---->Contenu: req._body === true");
+            if(req.body.userId === userIdDecodedToken) {
+                next();
+            }else {
+                console.log("------> ERREUR Autentification Body Raw");
+                throw "Error userId identification!";
+            }
+            // controler quand le corps passe par form-data(multer image) params url
+        } else if(userIdParamsUrl === userIdDecodedToken) {
             next();
-        }else{
-            console.log("Contenu: req");
-            console.log(req);
-            throw "Invalid userId !"
+        }else {
+            throw "Error url params from-data identification!";
         }
+
         // si les erreurs sont trouvees dans le try, on execute le catch
     }   catch(error){
         res.status(401).json({

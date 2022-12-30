@@ -3,8 +3,9 @@ const express = require("express");
 
 // importer le user depuis le controller
 const dataUserCtrl = require("../controllers/dataUser");
-console.log("Contenu: dataUserCtrl");
-console.log(dataUserCtrl);
+
+// importer le like depuis le controller
+const likeCtrl = require("../controllers/like");
 
 // importer le middleware d'authentification
 const auth = require("../middleware/auth");
@@ -26,10 +27,12 @@ router.get("/", auth, dataUserCtrl.readAllDataUser);
 router.get("/:id", auth, dataUserCtrl.readOneDataUser);
 
 // La route PUT pour modifier un objet selectionne grace a son identifiant(_id)
-router.put("/:id", auth, dataUserCtrl.updateOneDataUser);
+router.put("/:id", auth, multer, dataUserCtrl.updateOneDataUser);
 
 // La route DELETE pour supprimer un objet selectionne grace a son identifiant(_id)
 router.delete("/:id", auth, dataUserCtrl.deleteOneDataUser);
+
+router.post("/:id/like", auth, likeCtrl.likeDataUser);
 
 // exporter du module du router
 module.exports = router;
