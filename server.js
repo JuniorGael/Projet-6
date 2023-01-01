@@ -16,4 +16,4 @@ app.set("port", process.env.PORT);
 const server = http.createServer(app);
 
 // le serveur ecoute les requetes sur le port
-server.listen(process.env.PORT);
+server.listen(process.env.PORT, console.log(`ecoute sur le port: ${process.env.PORT}`));

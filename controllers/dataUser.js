@@ -39,21 +39,41 @@ exports.createDataUser = (req, res, next) => {
         .catch((error) => res.status(400).json({ error }));
 };
 
-exports.readAllDataUser = (req, res, next) => {
-    DataUser.find()
-        .then((AllDataUser) => res.status(200).json(AllDataUser))
-        .catch((error) => res.status(400).json({error}));
-};
+// ECMAScript 2015
+// exports.readAllDataUser = (req, res, next) => {
+//     DataUser.find()
+//         .then((AllDataUser) => res.status(200).json(AllDataUser))
+//         .catch((error) => res.status(400).json({error}));
+// };
 
-exports.readOneDataUser = (req, res, next) => {
-    // console.log("getOneDataUser");
-    // console.log(req.params.id);
-    // console.log({_id: req.params.id});
+// ECMAScript 2017
+exports.readAllDataUser = async(req, res) => {
+    try{
+        const dataUser = await DataUser.find({}).select("");
+        res.status(200).json(dataUser)
+    }catch(err){
+        res.status(500).json({error: err})
+    }
+}
 
-    DataUser.findOne({_id: req.params.id})
-        .then((oneDataUser) => res.status(200).json(oneDataUser))
-        .catch((error) => res.status(404).json({error}));
-};
+// ECMAScript 2017
+exports.readOneDataUser = async(req, res) => {
+    try{
+        const dataUser = await DataUser.findOne({_id: req.params.id}).exec();
+        res.status(200).json(dataUser);
+    }catch(error){
+        res.status(500).json({error});
+    }
+}
+// exports.readOneDataUser = (req, res, next) => {
+//     // console.log("getOneDataUser");
+//     // console.log(req.params.id);
+//     // console.log({_id: req.params.id});
+
+//     DataUser.findOne({_id: req.params.id})
+//         .then((oneDataUser) => res.status(200).json(oneDataUser))
+//         .catch((error) => res.status(404).json({error}));
+// };
 
 exports.updateOneDataUser = (req, res, next) => {
     console.log("updateOneDataUser");
