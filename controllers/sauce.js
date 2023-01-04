@@ -1,23 +1,23 @@
 // importer le models de la base de donnees MongoDB
-const DataUser = require("../models/DataUser");
+const Sauce = require("../models/Sauce");
 
 // importer le module fs de node.js pour acceder aux fichiers du serveur
 const fs = require("fs")
 
 // creation des donnees user
-exports.createDataUser = (req, res, next) => {
+exports.createSauce = (req, res,next) => {
     console.log("Contenu: req.body.email");
     console.log(req.body);
-    console.log("Contenu: req.body.dataUser");
-    console.log(req.body.dataUser);
+    console.log("Contenu: req.body.sauce");
+    console.log(req.body.sauce);
 
     console.log("Contenu POST: req.file");
     console.log(req.file);
 
     // ici je n'ai pas besoin d'utiliser un JSON.parser pour le req.body
-    const userDataObject = JSON.parse(req.body.dataUser);
-    console.log("Contenu: userDataObject");
-    console.log(userDataObject);
+    const sauceObject = JSON.parse(req.body.sauce);
+    console.log("Contenu: sauceObject");
+    console.log(sauceObject);
 
     console.log("------->CONTENU POUR FRABRIQUER L'URL DE L'IMAGE");
     console.log(req.protocol);
@@ -25,78 +25,80 @@ exports.createDataUser = (req, res, next) => {
     console.log(req.file.filename);
 
     // creer une instance du module
-    const dataUser = new DataUser({
-        ...userDataObject,
+    const sauce = new Sauce({
+        ...sauceObject,
         imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
     });
 
-    console.log("Contenu: dataUser");
-    console.log(dataUser);
+    console.log("Contenu: sauce");
+    console.log(sauce);
 
     // enregistrer l'objet dans la base de donnees
-    dataUser.save()
+    sauce.save()
         .then(() => res.status(201).json({message: "Object saved in database!", contenu: req.body}))
         .catch((error) => res.status(400).json({ error }));
 };
 
 // ECMAScript 2015
-// exports.readAllDataUser = (req, res, next) => {
-//     DataUser.find()
-//         .then((AllDataUser) => res.status(200).json(AllDataUser))
-//         .catch((error) => res.status(400).json({error}));
-// };
+exports.readAllSauce = (req, res, next) => {
+    Sauce.find()
+        .then((AllSauces) => res.status(200).json(AllSauces))
+        .catch((error) => res.status(400).json({error}));
+};
 
 // ECMAScript 2017
-exports.readAllDataUser = async(req, res) => {
-    try{
-        const dataUser = await DataUser.find({}).select("");
-        res.status(200).json(dataUser)
-    }catch(err){
-        res.status(500).json({error: err})
-    }
-}
+// exports.readAllSauce = async(req, res,next) => {
+//     try{
+//         const sauce = await Sauce.find({}).select("");
+//         res.status(200).json(sauce)
+//     }catch(err){
+//         res.status(500).json({error: err})
+//     }
+// }
 
 // ECMAScript 2017
-exports.readOneDataUser = async(req, res) => {
-    try{
-        const dataUser = await DataUser.findOne({_id: req.params.id}).exec();
-        res.status(200).json(dataUser);
-    }catch(error){
-        res.status(500).json({error});
-    }
-}
-// exports.readOneDataUser = (req, res, next) => {
-//     // console.log("getOneDataUser");
-//     // console.log(req.params.id);
-//     // console.log({_id: req.params.id});
+// exports.readOneSauce = async(req, res, next) => {
+//     try{
+//         const sauce = await Sauce.findOne({_id: req.params.id}).exec();
+//         res.status(200).json(sauce);
+//     }catch(error){
+//         res.status(500).json({error});
+//     }
+// }
 
-//     DataUser.findOne({_id: req.params.id})
-//         .then((oneDataUser) => res.status(200).json(oneDataUser))
-//         .catch((error) => res.status(404).json({error}));
-// };
+// ECMAScript 2015
+exports.readOneSauce = (req, res, next) => {
+    // console.log("getOneDataUser");
+    // console.log(req.params.id);
+    // console.log({_id: req.params.id});
 
-exports.updateOneDataUser = (req, res, next) => {
-    console.log("updateOneDataUser");
+    Sauce.findOne({_id: req.params.id})
+        .then((oneSauce) => res.status(200).json(oneSauce))
+        .catch((error) => res.status(404).json({error}));
+};
+
+exports.updateOneSauce = (req, res, next) => {
+    console.log("updateOneSauce");
     console.log(req.params.id);
     console.log({_id: req.params.id});
 
     console.log("Contenu PUT: req.file");
     console.log(req.file);
 
-    DataUser.findOne({_id: req.params.id})
+    Sauce.findOne({_id: req.params.id})
         .then((object) => {
             if(userIdParamsUrl === object.userId) {
 
             console.log("Permission to delete object!");
 
             if(req.file) {
-                DataUser.findOne({_id: req.params.id})
-                    .then((objet) => {
+                Sauce.findOne({_id: req.params.id})
+                    .then((object) => {
                         console.log("--------> LE RETOUR DE LA PROMESSE OBJET");
-                        console.log(objet);
+                        console.log(object);
 
                         // recuperer le nom de l'image a supprimer dans la base de donnee
-                        const filename = objet.imageUrl.split("/images/")[1];
+                        const filename = object.imageUrl.split("/images/")[1];
                         console.log("----->CONTENU: FILENAME");
                         console.log(filename);
 
@@ -114,51 +116,72 @@ exports.updateOneDataUser = (req, res, next) => {
             console.log("------>CONTENU: req.body");
             console.log(req.body);
             
-            console.log("------>CONTENU: req.body.dataUser");
-            console.log(req.body.dataUser);
+            console.log("------>CONTENU: req.body.sauce");
+            console.log(req.body.sauce);
             
             // deux cas possible
-            const userDataObject = JSON.parse(req.body.dataUser);
-            const dataUserObject = req.file ? 
+            // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
+            // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
+            // const sauceParse = JSON.parse(req.body.sauce);
+            const sauceObject = req.file ? 
             {
-                ...userDataObject,
+                ...JSON.parse(req.body.sauce),
                 imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
             } : {
                 ...req.body
             }
         
-            console.log("------->CONTENU PUT: dataUserObject");
-            console.log(dataUserObject);
+            console.log("------->CONTENU PUT: sauceObject");
+            console.log(sauceObject);
             
             // mettre a jour la base de donnee
-            DataUser.updateOne({_id: req.params.id}, {...dataUserObject, _id: req.params.id})
-            .then(() => res.status(200).json({message: "Object was updated successfully!", contenu: dataUserObject}))
+            Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id})
+            .then(() => res.status(200).json({message: "Object was updated successfully!", contenu: sauceObject}))
             .catch((error) => res.status(404).json({error}));
             }else {
-            // console.log("UserId different from the userId in the object: not authorized to make the modification!");
-            throw "UserId different from the userId in the object: Not authorized to make the modification!"
+                throw "UserId different from the userId in the object: Not authorized to make the modification!"
             }
         })
         .catch((error) => res.status(403).json({error}));
 };
 
-exports.deleteOneDataUser = (req, res, next) => {
-    console.log("deleteOneDataUser");
+// ECMAScript 2017
+// exports.deleteOneSauce = async(req, res, next) => {
+// // 
+//     try{
+//         const object = await Sauce.findOne({_id: req.params.id});
+
+//         if(userIdParamsUrl === object.userId) {
+//             // supprimer l'image dans le dossier images du serveur
+//             const filename = object.imageUrl.split("/images/")[1];
+            
+//             fs.unlink(`images/${filename}`, (err) => {
+//                     if(err) res.status(500).json({err});
+//                     console.log(`${filename} the file has been deleted!`);
+//             });
+
+//             // supprimer le dosument dans la base de donnee
+//             const sauce = await Sauce.findOneAndDelete({
+//                 _id: req.params.id
+//             });
+//             res.status(200).json({message: `id: ${req.params.id} document deleted!`})
+//         }else{
+//             res.status(403).json({message: "the user is not authorized to delete the document!"})
+//         }
+//     }catch(error){
+//         res.status(500).json({
+//             error: error,
+//             message: "Picture does not exist!"
+//         })
+//     }
+// }
+exports.deleteOneSauce = (req, res) => {
+    console.log("deleteOneSauce");
     console.log({_id: req.params.id});
 
     // chercher l'objet dans la base de donnee pour pouvoir recuperer l'url de l'image de l'objet a supprimer pour pouvoir l'effacer du serveur
-    DataUser.findOne({_id: req.params.id})
+    Sauce.findOne({_id: req.params.id})
         .then((object) => {
-            
-
-            console.log("----->Objet");
-            console.log(object);
-
-            console.log("----->Objet userId");
-            console.log(object.userId);
-
-            console.log("---->Req.originalUrl");
-            console.log(req.originalUrl);
 
             const userIdParamsUrl = req.originalUrl.split("=")[1];
             console.log("----->affichage de l'userId");
@@ -183,8 +206,4 @@ exports.deleteOneDataUser = (req, res, next) => {
             }
         })
         .catch((error) => res.status(500).json({error}));
-
-    // DataUser.deleteOne({_id: req.params.id})
-    //     .then(() => res.status(200).json({message: "Object was deleted successfully!"}))
-    //     .catch((error) => res.status(400).json({error}));
 };

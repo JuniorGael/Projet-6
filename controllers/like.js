@@ -1,7 +1,7 @@
 // importer le models de la base de donnees MongoDB
-const DataUser = require("../models/DataUser");
+const Sauce = require("../models/Sauce");
 
-exports.likeDataUser = (req, res, next) => {
+exports.likeSauce = (req, res, next) => {
     console.log("je suis dans le controlleur like!");
 
     // afficher le req.body
@@ -23,7 +23,7 @@ exports.likeDataUser = (req, res, next) => {
     console.log({_id: req.params.id});
 
     // chercher l'objet dans la base de donnee
-    DataUser.findOne({_id: req.params.id})
+    Sauce.findOne({_id: req.params.id})
         .then((object) => {
             console.log("---->Contenu resultat promise: object");
             console.log(object);
@@ -39,14 +39,14 @@ exports.likeDataUser = (req, res, next) => {
                 console.log("---->userId n'est pas dans usersLiked de la base de donnee et la requte du front like = 1");
                 
                 // mettre a jour objet de la base de donnee
-                DataUser.updateOne(
+                Sauce.updateOne(
                     {_id: req.params.id},
                     {
                         $inc: {likes: 1},
                         $push: {usersLiked: req.body.userId}
                     }
                 )
-                    .then(() => res.status(201).json({message: "DataUser liked +1"}))
+                    .then(() => res.status(201).json({message: "Sauce liked +1"}))
                     .catch((error) => res.status(400).json({error}));
             }
 
@@ -55,14 +55,14 @@ exports.likeDataUser = (req, res, next) => {
                 console.log("---->userId est dans userLiked et likes = 0");
                 
                 // mettre a jour objet de la base de donnee
-                DataUser.updateOne(
+                Sauce.updateOne(
                     {_id: req.params.id},
                     {
                         $inc: {likes: -1},
                         $pull: {usersLiked: req.body.userId}
                     }
                 )
-                    .then(() => res.status(201).json({message: "DataUser liked 0"}))
+                    .then(() => res.status(201).json({message: "Sauce liked 0"}))
                     .catch((error) => res.status(400).json({error}));
             }
 
@@ -71,14 +71,14 @@ exports.likeDataUser = (req, res, next) => {
                 console.log("---->userId est dans usersDisliked et disLikes = 1");
                 
                 // mettre a jour objet de la base de donnee
-                DataUser.updateOne(
+                Sauce.updateOne(
                     {_id: req.params.id},
                     {
                         $inc: {dislikes: 1},
                         $push: {usersDisliked: req.body.userId}
                     }
                 )
-                    .then(() => res.status(201).json({message: "DataUser disLiked +1"}))
+                    .then(() => res.status(201).json({message: "Sauce disLiked +1"}))
                     .catch((error) => res.status(400).json({error}));
             }
 
@@ -87,14 +87,14 @@ exports.likeDataUser = (req, res, next) => {
                 console.log("---->userId est dans usersDisliked et likes = 0");
                 
                 // mettre a jour objet de la base de donnee
-                DataUser.updateOne(
+                Sauce.updateOne(
                     {_id: req.params.id},
                     {
                         $inc: {dislikes: -1},
                         $pull: {usersDisliked: req.body.userId}
                     }
                 )
-                    .then(() => res.status(201).json({message: "DataUser disliked 0"}))
+                    .then(() => res.status(201).json({message: "Sauce disliked 0"}))
                     .catch((error) => res.status(400).json({error}));
             }
         })
