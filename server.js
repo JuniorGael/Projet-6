@@ -9,11 +9,12 @@ const dotenv = require("dotenv");
 const result = dotenv.config();
 
 
-// parametrer le prot avec la methode 'set' de Express
+// parametrer le port avec la methode 'set' de Express
 app.set("port", process.env.PORT);
 
 // la methode 'createServer()' prend en argument, la fonction qui sera appele a chaque requete recu par le serveur. Ici les fonctions seront dans 'app.js'
 const server = http.createServer(app);
 
 // le serveur ecoute les requetes sur le port
-server.listen(process.env.PORT, console.log(`ecoute sur le port: ${process.env.PORT}`));
+// server.listen(process.env.PORT, console.log(`ecoute sur le port: ${process.env.PORT}`));
+server.listen(process.env.PORT || `${process.env.PORT}`);

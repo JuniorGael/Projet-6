@@ -22,12 +22,12 @@ const storage = multer.diskStorage({
         const name = file.originalname.split(" ").join("_");
         const extension = MIME_TYPES[file.mimetype];
 
-        // callback(null, name + "_" + Date.now() + "." + extension);
-        callback(null, `${name}_${Date.now()}.${extension}`);
+        callback(null, name + Date.now() + "." + extension);
+        // callback(null, `${name}_${Date.now()}.${extension}`);
     }
 });
 console.log("------>Contenu: storage");
 console.log(storage);
 
 // exporter du middleware multer
-module.exports = multer({storage}).single("image");
+module.exports = multer({storage: storage}).single("image");

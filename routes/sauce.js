@@ -1,17 +1,19 @@
 // importer le framework express
 const express = require("express");
 
+// importer le middleware d'authentification
+const auth = require("../middleware/auth");
+
+// importer le middleware multer pour la gestion des fichiers images
+const multer = require("../middleware/multer");
+
 // importer le user depuis le controller
 const sauceCtrl = require("../controllers/sauce");
 
 // importer le like depuis le controller
 const likeCtrl = require("../controllers/like");
 
-// importer le middleware d'authentification
-const auth = require("../middleware/auth");
 
-// importer le middleware multer pour la gestion des fichiers images
-const multer = require("../middleware/multer");
 
 // Utiliser la fonction Router()
 const router = express.Router();

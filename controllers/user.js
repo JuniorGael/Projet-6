@@ -37,7 +37,7 @@ exports.signup = (req, res, next) => {
             const user = new User({
                 email: emailCryptoJs,
                 password: hash
-            })
+            });
             console.log("Contenu: user");
             console.log(user);
 
@@ -95,9 +95,9 @@ exports.login = (req, res, next) => {
                             `${process.env.JWT_KEY_TOKEN}`,
                             {expiresIn: "24h"}
                         )
-                    })
+                    });
                 })
-                .catch((error) => res.status(500).json({error}))
+                .catch((error) => res.status(500).json({error}));
         })
         .catch((error) => res.status(500).json({error}));
 };

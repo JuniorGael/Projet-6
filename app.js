@@ -41,13 +41,10 @@ app.use((req, res, next) => {
 app.use("/api/auth", userRoutes);
 
 // creer une route pour les donnees user
-// app.use("/api/data_user", dataUserRoutes);
 app.use("/api/sauces", sauceRoutes);
 
 // creer une route pour acceder aux images du dossier 'images'
 app.use("/images", express.static(path.join(__dirname, "images")));
-console.log("Contenu__dirname");
-console.log(__dirname);
 
 // Exporter app.js pour pouvoir y acceder depuis un autre fichier
 module.exports = app;
