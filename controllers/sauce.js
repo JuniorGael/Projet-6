@@ -105,12 +105,20 @@ exports.readOneSauce = async (req, res, next) => {
 //           .catch((error) => res.status(401).json({ error }));
 //       }
 //     })
-//     .catch((error) => res.status(400).json({ error }));
-// };
 exports.updateOneSauce = (req, res, next) => {
 
-    Sauce.findOne({_id: req.params.id})
-      .then((object) => {
+    // Sauce.findOne({_id: req.params.id})
+    //   .then((object) => {
+      // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
+      // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
+    const sauceObject = req.file ? 
+    {
+        ...JSON.parse(req.body.sauce),
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
+    } : {
+        ...req.body
+    }
+    delete sauceObject._body;
               if(req.file) {
                 Sauce.findOne({_id: req.params.id})
                   .then((object) => {
@@ -122,26 +130,20 @@ exports.updateOneSauce = (req, res, next) => {
                       fs.unlink(`images/${filename}`, (error) => {
                           if(error) throw error;
                       })
+                      // if (fs.existsSync(images/`${filename}`)) {
+                      //   fs.unlinkSync(images/`${filename}`);
+                      // }
                   })
                   .catch((error) => res.status(404).json({error}))
               }
         
-                // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
-                // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
-              const sauceObject = req.file ? 
-              {
-                  ...JSON.parse(req.body.sauce),
-                  imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-              } : {
-                  ...req.body
-              }
         
               // mettre a jour la base de donnee
               Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id})
               .then(() => res.status(200).json({message: "Object was updated successfully!", contenu: sauceObject}))
               .catch((error) => res.status(404).json({error}))
-      })
-      .catch((error) => res.status(403).json({error}))
+      // })
+      // .catch((error) => res.status(403).json({error}))
 };
 
 // ECMAScript 2017
