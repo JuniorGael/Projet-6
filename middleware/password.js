@@ -7,7 +7,7 @@ const passwordSchema = new passwordValidator();
 // ajouter des proprietes que le user doit respecter pour le password
 passwordSchema
 .is().min(7)                                    
-// Minimum length 8
+// Minimum length 7
 .is().max(100)                                  
 // Maximum length 100
 .has().uppercase()                              

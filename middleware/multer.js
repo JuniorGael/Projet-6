@@ -8,7 +8,6 @@ const MIME_TYPES = {
     "image/jpg": "jpg",
     "image/jpeg": "jpg",
     "image/png": "png",
-    "image/gif": "gif"
 };
 
 // creer une destination du fichier(repertoire) et generer un nom de fichier unique
@@ -23,11 +22,8 @@ const storage = multer.diskStorage({
         const extension = MIME_TYPES[file.mimetype];
 
         callback(null, name + Date.now() + "." + extension);
-        // callback(null, `${name}_${Date.now()}.${extension}`);
     }
 });
-console.log("------>Contenu: storage");
-console.log(storage);
 
 // exporter du middleware multer
 module.exports = multer({storage: storage}).single("image");

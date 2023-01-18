@@ -29,20 +29,3 @@ module.exports = (req, res, next) => {
         });
     }
 };
-
-// module.exports = (req, res, next) => {
-//     try {
-//     // le token est extré  du header Authorization de la requête entrante
-//     // fonction split pour tout récupérer après l'espace dans le header. Les erreurs générées ici s'afficheront dans le bloc catch.
-//         const token = req.headers.authorization.split(' ')[1];
-//        // decode le token via la fonction de json web token (jwt) .verify
-//         const decodedToken = jwt.verify(token, process.env.JWT_KEY_TOKEN);
-//         const userId = decodedToken.userId;
-//         req.auth = {
-//             userId: userId
-//         };
-//     next();
-//     } catch(error) {
-//         res.status(401).json({ error });
-//     }
-// };

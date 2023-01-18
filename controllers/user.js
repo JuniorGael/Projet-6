@@ -14,19 +14,10 @@ const result = dotenv.config();
 // importer les modeles de la base de donnees 'User.js'
 const User = require("../models/User");
 
-
-
 // enregistrer le nouvel user dans la base de donnees
 exports.signup = (req, res, next) => {
-    console.log("Contenu: req.body.email");
-    console.log(req.body.email);
-    console.log("Contenu: req.body.password");
-    console.log(req.body.password);
-
     // chiffrer le mail avant de l'envoyer dans la base de donnees
     const emailCryptoJs = cryptoJs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
-    console.log("Contenu: emailCryptoJs");
-    console.log(emailCryptoJs);
 
     /* hasher le mot de passe avant de l'envoyer dans la base de donnees.
     salt = 0, c'est combien de fois sera execute l'algorithme de hashage
@@ -38,8 +29,6 @@ exports.signup = (req, res, next) => {
                 email: emailCryptoJs,
                 password: hash
             });
-            console.log("Contenu: user");
-            console.log(user);
 
             // envoyer le user dans le base de donnees MongoDB
             user.save()
@@ -51,34 +40,20 @@ exports.signup = (req, res, next) => {
 
 // creer un login pour s'authentifier
 exports.login = (req, res, next) => {
-    // le contenu de la requete
-    console.log("Contenu: req.body.email");
-    console.log(req.body.email);
-    console.log("Contenu: req.body.password");
-    console.log(req.body.password);
 
     // chiffrer l'email de la requete
     const emailCryptoJs = cryptoJs.HmacSHA256(req.body.email, `${process.env.CRYPTOJS_EMAIL}`).toString();
-    console.log("Contenu: emailCryptoJs");
-    console.log(emailCryptoJs);
-
-    console.log("Contenu: User");
-    console.log(User);
 
     // chercher dans la base de donnees si le user est bien present
     User.findOne({email: emailCryptoJs})
         // verifier si le mail du user n'est pas correct, c-a-d si le mail n'existe pas
         .then((user) => {
-            console.log("Contenu: user");
-            console.log(user);
             if(!user) {
                 return res.status(401).json({error: "User not found"})
             }
             // verifier la validite du password envoyer par le user depuis le frontend
             bcrypt.compare(req.body.password, user.password)
                 .then((controlPassword) => {
-                    console.log("Contenu: controlPassword");
-                    console.log(controlPassword);
 
                     // verifier si le password est incorrect
                     if(!controlPassword) {

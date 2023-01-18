@@ -40,7 +40,7 @@ app.use((req, res, next) => {
 // creer une route d'authentification (auth)
 app.use("/api/auth", userRoutes);
 
-// creer une route pour les donnees user
+// creer une route pour les donnees sauces
 app.use("/api/sauces", sauceRoutes);
 
 // creer une route pour acceder aux images du dossier 'images'
