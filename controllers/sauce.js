@@ -53,36 +53,50 @@ exports.readOneSauce = async (req, res, next) => {
 
 // Modifier une sauce
 exports.updateOneSauce = (req, res, next) => {
-
-      // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
-      // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
-    const sauceObject = req.file ? 
-    {
+  // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
+  // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
+  const sauceObject = req.file
+    ? {
         ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${req.file.filename}`
-    } : {
-        ...req.body
-    }
-    delete sauceObject._body;
-              if(req.file) {
-                Sauce.findOne({_id: req.params.id})
-                  .then((object) => {
+        imageUrl: `${req.protocol}://${req.get("host")}/images/${
+          req.file.filename
+        }`,
+      }
+    : {
+        ...req.body,
+      };
+  delete sauceObject._body;
+  Sauce.findOne({ _id: req.params.id })
+    .then((object) => {
 
-                      // recuperer le nom de l'image a supprimer dans la base de donnee
-                      const filename = object.imageUrl.split("/images/")[1];
+      if (object.userId != req.auth.userId) {
+        res.status(401).json({ message: "Not authorized !" });
+      } else if (req.file) {
+        // recuperer le nom de l'image a supprimer dans la base de donnee
+        const filename = object.imageUrl.split("/images/")[1];
+  
+        //supprimer l'image dans le dossier images du serveur
+        fs.unlink(`images/${filename}`, (error) => {
+          if (error) throw error;
+        });
+      }
+      Sauce.updateOne(
+        { _id: req.params.id },
+        { ...sauceObject, _id: req.params.id }
+      )
+        .then(() =>
+          res.status(200).json({
+            message: "Object was updated successfully!",
+            contenu: sauceObject,
+          })
+        )
+        .catch((error) => res.status(404).json({ error }));
+    })
+    .catch((error) => res.status(404).json({ error }));
+  
 
-                      //supprimer l'image dans le dossier images du serveur
-                      fs.unlink(`images/${filename}`, (error) => {
-                          if(error) throw error;
-                      })
-                  })
-                  .catch((error) => res.status(404).json({error}))
-              }
-        
-              // mettre a jour la base de donnee
-              Sauce.updateOne({_id: req.params.id}, {...sauceObject, _id: req.params.id})
-              .then(() => res.status(200).json({message: "Object was updated successfully!", contenu: sauceObject}))
-              .catch((error) => res.status(404).json({error}))
+  // mettre a jour la base de donnee
+  
 };
 
 // Supprimer une sauce
@@ -92,21 +106,20 @@ exports.deleteOneSauce = (req, res, next) => {
     .then((object) => {
       // verifier si l'userId connecte est autorise a supprimer l'objet en comparant l'userId dans l'onjet avec l'userId qui fait la demande
       if (object.userId != req.auth.userId) {
-        res.status(401).json({message: "Not authorized !"})
-      
+        res.status(401).json({ message: "Not authorized !" });
       } else {
         const filename = object.imageUrl.split("/images/")[1];
-  
+
         // supprimer l'image dans le dossier images du serveur
         fs.unlink(`images/${filename}`, () => {
           Sauce.deleteOne({ _id: req.params.id })
             .then(() => {
               res.status(200).json({
-                message: "Object was deleted successfully in Database!"
-              })
+                message: "Object was deleted successfully in Database!",
+              });
             })
             .catch((error) => res.status(401).json({ error }));
-        })
+        });
       }
     })
     .catch((error) => res.status(500).json({ error }));
