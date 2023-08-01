@@ -8,7 +8,6 @@ exports.likeSauce = (req, res, next) => {
         .then((object) => {
             // si le userLiked est false et si like === 1
             if(!object.usersLiked.includes(req.body.userId) && req.body.like === 1) {
-                
                 // mettre a jour objet de la base de donnee
                 Sauce.updateOne(
                     {_id: req.params.id},

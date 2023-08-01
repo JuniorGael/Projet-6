@@ -56,15 +56,16 @@ exports.updateOneSauce = (req, res, next) => {
   // preparer un objet sauce qui sera mise a jour apres dans la base de donnee
   // l'operateur spray(...: l'operateur de decomposition) pour eclater l'objet
   const sauceObject = req.file
-    ? {
-        ...JSON.parse(req.body.sauce),
-        imageUrl: `${req.protocol}://${req.get("host")}/images/${
-          req.file.filename
-        }`,
-      }
-    : {
-        ...req.body,
-      };
+  ? {
+    ...JSON.parse(req.body.sauce),
+    imageUrl: `${req.protocol}://${req.get("host")}/images/${
+      req.file.filename
+    }`,
+  }
+  : {
+    ...req.body,
+  };
+  console.log(sauceObject);
   delete sauceObject._body;
   Sauce.findOne({ _id: req.params.id })
     .then((object) => {
